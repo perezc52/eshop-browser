@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import {getGamesAmerica} from 'nintendo-switch-eshop'
+import Link from 'next/link'
 
 export default function Home({ data }) {
   const gameElements = data.map((el,i) => {
     return (
       <div key={i}>
-        <h2>{el.title}</h2>
+       <Link href={`/${el.slug}`}><h2>{el.title}</h2></Link>
       </div>
     )
   })
