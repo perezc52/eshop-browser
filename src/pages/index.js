@@ -1,13 +1,11 @@
 import Head from 'next/head'
-import {getGamesAmerica} from 'nintendo-switch-eshop'
 import Link from 'next/link'
 
 export default function Home({ data }) {
-  const gameElements = data.map((el,i) => {
+  console.log(data)
+  const elements = data.map((el,i) => {
     return (
-      <div key={i}>
-       <Link href={`/${el.slug}`}><h2>{el.title}</h2></Link>
-      </div>
+      <h1 key={i}>{el.name}</h1>
     )
   })
   return (
@@ -19,14 +17,24 @@ export default function Home({ data }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        {gameElements}
+        {elements}
       </main>
     </>
   )
 }
 
 export async function getStaticProps() {
-  const data = await getGamesAmerica()
+  const url = `https://api.igdb.com/v4/games/`
+  const options = {
+    method: 'POST',
+    headers: {
+      'Client-ID': process.env.CLIENT_ID,
+      'Authorization': process.env.AUTHORIZATION
+    },
+    body: "fields *; where id = 1942;"
+  }
+  const res = await fetch(url, options)
+  const data = await res.json()
   return {
     props: {
       data: data
