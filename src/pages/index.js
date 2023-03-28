@@ -1,13 +1,10 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import ImageCarousel from '@/components/ImageCarousel'
+import NavBar from '@/components/NavBar'
 
 export default function Home({ data }) {
-  console.log(data)
-  const elements = data.map((el,i) => {
-    return (
-      <h1 key={i}>{el.name}</h1>
-    )
-  })
+  const elements = data.map(el => <h1>{el.name}</h1>)
   return (
     <>
       <Head>
@@ -17,24 +14,27 @@ export default function Home({ data }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <NavBar />
         {elements}
+        <ImageCarousel imageUrls={[]}/>
       </main>
     </>
   )
 }
 
 export async function getStaticProps() {
-  const url = `https://api.igdb.com/v4/games/`
+  const url = 'https://api.igdb.com/v4/games'
   const options = {
     method: 'POST',
     headers: {
       'Client-ID': process.env.CLIENT_ID,
       'Authorization': process.env.AUTHORIZATION
     },
-    body: "fields *; where id = 1942;"
+    body: "fields artworks.url,category,cover,created_at,dlcs.*,first_release_date,franchises.name,game_modes.name,genres.name,hypes,multiplayer_modes.*,name,platforms.name,player_perspectives.name,rating, rating_count,screenshots.url,similar_games.name,slug,storyline,themes.*,total_rating,url,videos.*,websites.*; where platforms = 130 & total_rating_count != null; sort total_rating_count desc; limit 200;"
   }
   const res = await fetch(url, options)
   const data = await res.json()
+  console.log(data)
   return {
     props: {
       data: data
